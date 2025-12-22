@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Opening Kora App…</title>
+
+  <!-- Android App Link -->
+  <meta property="al:android:package" content="com.koraspace.app" />
+
+  <script>
+    const params = window.location.search;
+
+    // Try to open app
+    window.location.href = "kora://add-friend" + params;
+
+    // Fallback to Play Store
+    setTimeout(() => {
+      document.getElementById("fallback").style.display = "block";
+    }, 1500);
+  </script>
+</head>
+
+<body>
+  <p>Opening Kora App…</p>
+
+  <p id="fallback" style="display:none;">
+    App not installed?
+    <a href="https://play.google.com/store/apps/details?id=com.koraspace.app">
+      Install from Play Store
+    </a>
+  </p>
+</body>
+</html>
