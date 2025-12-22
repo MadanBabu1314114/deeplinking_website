@@ -31,7 +31,7 @@
       animation: fadeIn 1s ease-out forwards;
     }
 
-    .logo {
+    .logo-text {
       font-size: 32px;
       font-weight: 700;
       letter-spacing: 3px;
@@ -39,17 +39,37 @@
       text-shadow: 0 0 20px #00f6ff;
     }
 
-    /* Loader Ring */
-    .ring {
+    /* Ring wrapper */
+    .ring-wrapper {
+      position: relative;
       width: 140px;
       height: 140px;
+      margin: 0 auto 30px;
+    }
+
+    /* Loader Ring */
+    .ring {
+      position: absolute;
+      inset: 0;
       border-radius: 50%;
       border: 6px solid transparent;
       border-top: 6px solid #00f6ff;
       border-right: 6px solid #7cff00;
       animation: spin 1.2s linear infinite;
-      margin: 0 auto 30px;
       box-shadow: 0 0 40px rgba(0, 246, 255, 0.4);
+    }
+
+    /* Logo inside ring */
+    .ring-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(0, 246, 255, 0.8));
     }
 
     .status {
@@ -107,9 +127,13 @@
 
 <body>
   <div class="container">
-    <div class="logo">KORA</div>
+    <div class="logo-text">KORA</div>
 
-    <div class="ring"></div>
+    <!-- 🔥 Ring with Logo -->
+    <div class="ring-wrapper">
+      <div class="ring"></div>
+      <img src="logo.png" alt="Kora Logo" class="ring-logo" />
+    </div>
 
     <div class="status">Connecting to arena…</div>
 
