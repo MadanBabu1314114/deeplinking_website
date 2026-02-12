@@ -1,37 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Open Provider</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opening CureOffer...</title>
 
-  <script>
-    function openApp() {
-      var params = window.location.search;
-      var path = window.location.pathname;
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #4e73df, #1cc88a);
+    overflow: hidden;
+  }
 
-      // Your app scheme
-      var appUrl = "cureoffer://provider" + path.replace("/provider", "") + params;
+  .container {
+    text-align: center;
+    color: white;
+    animation: fadeIn 1.5s ease-in-out;
+  }
 
-      // Website fallback
-      var webUrl = "http://cureoffer-ui.s3-website-us-east-1.amazonaws.com" + path + params;
+  .logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    animation: slideDown 1.2s ease-in-out;
+  }
 
-      // Try open app
-      window.location = appUrl;
+  .spinner {
+    width: 70px;
+    height: 70px;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-top: 6px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+  }
 
-      // If app not installed → redirect after 2 seconds
-      setTimeout(function () {
-        window.location = webUrl;
-      }, 2000);
+  .text {
+    font-size: 18px;
+    margin-top: 10px;
+    opacity: 0.9;
+  }
+
+  .button {
+    margin-top: 25px;
+    padding: 12px 24px;
+    background: white;
+    color: #4e73df;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    display: inline-block;
+  }
+
+  .button:hover {
+    background: #f8f9fc;
+    transform: scale(1.05);
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+</style>
+
+<script>
+  function openApp() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const providerId = urlParams.get("providerId");
+    const offerId = urlParams.get("offerId");
+
+    if (!providerId) {
+      document.getElementById("message").innerText = "Invalid Provider Link";
+      return;
     }
-  </script>
+
+    let appUrl = "cureoffer://provider/" + providerId;
+    if (offerId) {
+      appUrl += "?offerId=" + offerId;
+    }
+
+    let webUrl = "http://cureoffer-ui.s3-website-us-east-1.amazonaws.com/provider/" 
+                + providerId + (offerId ? "?offerId=" + offerId : "");
+
+    // Try open app
+    window.location.href = appUrl;
+
+    // Fallback after 2 seconds
+    setTimeout(function () {
+      window.location.href = webUrl;
+    }, 2000);
+
+    // Update manual button
+    document.getElementById("openBtn").href = appUrl;
+  }
+</script>
 </head>
 
 <body onload="openApp()">
-  <h2>Opening CureOffer App...</h2>
-  <p>If not redirected, <a id="fallback" href="#">Click here</a></p>
 
-  <script>
-    document.getElementById("fallback").href = window.location.href;
-  </script>
+<div class="container">
+  <div class="logo">CureOffer</div>
+  <div class="spinner"></div>
+  <div id="message" class="text">Opening your provider offer...</div>
+  <a id="openBtn" class="button" href="#">Open in App</a>
+</div>
+
 </body>
 </html>
