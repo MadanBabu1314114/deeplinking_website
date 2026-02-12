@@ -1,70 +1,37 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CureOffer Link</title>
+  <meta charset="UTF-8">
+  <title>Open Provider</title>
+
   <script>
-    // CONFIG - replace these
-    const fallbackUrl = "http://cureoffer-ui.s3-website-us-east-1.amazonaws.com/provider/a4698f56-9467-47bd-8787-be4af58f0663?offerId=66";
-    const appScheme = "cureoffer"; // custom url scheme: cureoffer://provider/...
-    const androidPackage = "com.example.cureoffer"; // android package name
-    // End CONFIG
-
-    // build the deep link path from current location pathname+search
-    const pathAndQuery = location.pathname + location.search; // e.g. /provider/ID?offerId=66
-    // If your S3 path includes /provider/..., use `pathAndQuery` as-is.
-    const customUrl = `${appScheme}://${pathAndQuery.replace(/^\/?/, '')}`;
-    const intentUrl = `intent://${pathAndQuery.replace(/^\/?/, '')}#Intent;scheme=${appScheme};package=${androidPackage};S.browser_fallback_url=${encodeURIComponent(fallbackUrl)};end`;
-
     function openApp() {
-      const ua = navigator.userAgent || navigator.vendor || window.opera;
-      // On Android Chrome, using intent: is more reliable
-      if (/android/i.test(ua)) {
-        // create a clickable link (some browsers require a user gesture)
-        window.location = intentUrl;
-        return;
-      }
+      var params = window.location.search;
+      var path = window.location.pathname;
 
-      // For iOS Safari and other browsers: try custom URL scheme, then fallback
-      const now = Date.now();
-      // Attempt open by changing location (this will silently fail if not installed)
-      window.location = customUrl;
+      // Your app scheme
+      var appUrl = "cureoffer://provider" + path.replace("/provider", "") + params;
 
-      // If after 1400ms the page is still visible -> redirect to fallback
+      // Website fallback
+      var webUrl = "http://cureoffer-ui.s3-website-us-east-1.amazonaws.com" + path + params;
+
+      // Try open app
+      window.location = appUrl;
+
+      // If app not installed → redirect after 2 seconds
       setTimeout(function () {
-        // If the page is still visible, go to fallback
-        if (Date.now() - now < 2000) {
-          window.location = fallbackUrl;
-        }
-      }, 1400);
+        window.location = webUrl;
+      }, 2000);
     }
-
-    // Optional: try to open app on load
-    window.addEventListener('load', () => {
-      // If user interaction is required to start, show a button
-      // We'll try automatic open; if blocked, show button
-      try {
-        openApp();
-      } catch (e) {
-        // fallback UI
-      }
-    });
   </script>
-  <style>
-    body {font-family: Arial, Helvetica, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;}
-    .card {text-align:center; padding:24px; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.08);}
-    button {padding:10px 18px; border-radius:8px; border:none; font-size:16px; cursor:pointer;}
-  </style>
 </head>
-<body>
-  <div class="card">
-    <h2>Open in CureOffer app?</h2>
-    <p>If your app doesn't open automatically, press the button below.</p>
-    <p>
-      <button onclick="openApp()">Open CureOffer App</button>
-    </p>
-    <p style="font-size:12px;color:#666">If the app isn't installed you'll be redirected to the web page.</p>
-  </div>
+
+<body onload="openApp()">
+  <h2>Opening CureOffer App...</h2>
+  <p>If not redirected, <a id="fallback" href="#">Click here</a></p>
+
+  <script>
+    document.getElementById("fallback").href = window.location.href;
+  </script>
 </body>
 </html>
